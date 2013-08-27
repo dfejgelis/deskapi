@@ -10,8 +10,9 @@ version = '0.1'
 
 tests_require = [
     'httpretty',
-    'unittest2',
 ]
+if sys.version_info < (3, 3):
+    tests_require.append('unittest2')
 
 install_requires = [
     'requests',

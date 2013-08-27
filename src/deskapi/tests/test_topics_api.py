@@ -2,14 +2,15 @@
 
 import json
 import re
-from unittest2 import TestCase
-import urlparse
+from deskapi.six import (
+    TestCase,
+    unicode_str,
+)
 
 import httpretty
 
 from deskapi import models
 from deskapi.tests.util import fixture
-
 
 class DeskApi2TopicTests(TestCase):
 
@@ -122,11 +123,11 @@ class DeskApi2TopicTests(TestCase):
         updated_ja = ja.update()
 
         self.assertEqual(
-            json.loads(httpretty.last_request().body),
+            json.loads(unicode_str(httpretty.last_request().body)),
             json.loads(fixture('topic_translation_update_request.json')),
         )
 
-        self.assertEqual(updated_ja.name, '日本語訳'.decode('utf8'))
+        self.assertEqual(updated_ja.name, unicode_str('日本語訳'))
 
     def test_create_topic_translation(self):
 
@@ -139,11 +140,11 @@ class DeskApi2TopicTests(TestCase):
         )
 
         self.assertEqual(
-            json.loads(httpretty.last_request().body),
+            json.loads(unicode_str(httpretty.last_request().body)),
             json.loads(fixture('topic_translation_create_request.json')),
         )
 
-        self.assertEqual(es.name, 'Traducción español'.decode('utf8'))
+        self.assertEqual(es.name, unicode_str('Traducción español'))
         self.assertEqual(es.locale, 'es')
 
     def test_topic_api_href(self):
@@ -162,7 +163,7 @@ class DeskApi2TopicTests(TestCase):
         updated_topic = topic.update()
 
         self.assertEqual(
-            json.loads(httpretty.last_request().body),
+            json.loads(unicode_str(httpretty.last_request().body)),
             json.loads(fixture('topic_update_request.json')),
         )
 
@@ -178,7 +179,7 @@ class DeskApi2TopicTests(TestCase):
         )
 
         self.assertEqual(
-            json.loads(httpretty.last_request().body),
+            json.loads(unicode_str(httpretty.last_request().body)),
             json.loads(fixture('topic_create_request.json')),
         )
 

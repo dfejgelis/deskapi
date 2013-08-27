@@ -1,4 +1,5 @@
-import unittest2
+from deskapi.six import unittest
+
 
 def additional_tests():
-    return unittest2.defaultTestLoader.discover('.')
+    return unittest.defaultTestLoader.discover('.')

@@ -3,8 +3,12 @@
 import json
 import os
 import re
-from unittest2 import TestCase
-import urlparse
+
+from deskapi.six import (
+    TestCase,
+    parse_qs,
+    unicode_str,
+)
 
 import httpretty
 
@@ -22,7 +26,7 @@ class DeskApi2ArticleTests(TestCase):
         previous = next = 'null'
 
         if '?' in uri:
-            page = int(urlparse.parse_qs(uri.split('?', 1)[1])['page'][0])
+            page = int(parse_qs(uri.split('?', 1)[1])['page'][0])
         else:
             page = 1
         start_index = (page - 1) * self.PER_PAGE
@@ -143,7 +147,7 @@ class DeskApi2ArticleTests(TestCase):
         )
 
         self.assertEqual(
-            json.loads(httpretty.last_request().body),
+            json.loads(unicode_str(httpretty.last_request().body)),
             json.loads(fixture('article_create_request.json')),
         )
         self.assertEqual(httpretty.last_request().path, '/api/v2/articles')
@@ -160,7 +164,7 @@ class DeskApi2ArticleTests(TestCase):
         self.assertEqual(updated_article.subject, 'New Subject')
 
         self.assertEqual(
-            json.loads(httpretty.last_request().body),
+            json.loads(unicode_str(httpretty.last_request().body)),
             json.loads(fixture('article_update_request.json')),
         )
 
@@ -182,7 +186,7 @@ class DeskApi2ArticleTests(TestCase):
             subject='日本語訳',
         )
 
-        self.assertEqual(ja.subject,  '日本語訳'.decode('utf8'))
+        self.assertEqual(ja.subject, unicode_str('日本語訳'))
 
     def test_article_translation_update(self):
 
@@ -195,9 +199,9 @@ class DeskApi2ArticleTests(TestCase):
 
         self.assertEqual(
             updated_es.subject,
-            'Actualizada la traducción española'.decode('utf8')
+            unicode_str('Actualizada la traducción española'),
         )
         self.assertEqual(
-            json.loads(httpretty.last_request().body),
+            json.loads(unicode_str(httpretty.last_request().body)),
             json.loads(fixture('article_translation_update_request.json')),
         )
