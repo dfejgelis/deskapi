@@ -7,11 +7,16 @@ import requests
 
 class DeskSession(object):
 
-    BASE_URL = 'https://eventbrite.desk.com'
     _CLASSES = {}
     _COLLECTIONS = {}
 
-    def __init__(self, session=None, auth=None):
+    def __init__(self, sitename=None, session=None, auth=None):
+
+        if sitename is None:
+            raise Exception()
+
+        self._sitename = sitename
+        self._BASE_URL = 'https://%s.desk.com' % (sitename, )
 
         self._session = session
 
@@ -38,7 +43,7 @@ class DeskSession(object):
 
         return self._session.request(
             method,
-            '%s%s' % (self.BASE_URL, path,),
+            '%s%s' % (self._BASE_URL, path,),
             verify=False,
             **request_kwargs
         )
@@ -67,6 +72,7 @@ class DeskSession(object):
         )
 
         kwargs['session'] = self._session
+        kwargs['sitename'] = self._sitename
 
         return object_class(entry, *args, **kwargs)
 
@@ -79,6 +85,7 @@ class DeskSession(object):
         )
 
         kwargs['session'] = self._session
+        kwargs['sitename'] = self._sitename
 
         return object_class(link_info['href'], *args, **kwargs)
 
@@ -102,13 +109,13 @@ class DeskApi2(DeskSession):
 
 class DeskCollection(DeskSession):
 
-    def __init__(self, path, session=None):
+    def __init__(self, path, **kwargs):
 
         self._path = path
         self._cache = None
         self._links = None
 
-        super(DeskCollection, self).__init__(session=session)
+        super(DeskCollection, self).__init__(**kwargs)
 
     def items(self):
 
@@ -171,13 +178,13 @@ class DeskCollection(DeskSession):
 
 class DeskObject(DeskSession):
 
-    def __init__(self, entry, session=None):
+    def __init__(self, entry, **kwargs):
 
         self._entry = entry
         self._links = entry['_links']
         self._changed = {}
 
-        super(DeskObject, self).__init__(session=session)
+        super(DeskObject, self).__init__(**kwargs)
 
     @property
     def api_href(self):
@@ -202,7 +209,7 @@ class DeskObject(DeskSession):
 
     def __setattr__(self, key, value):
 
-        if key.startswith('_'):
+        if key in self.__dict__ or key.startswith('_'):
             return super(DeskObject, self).__setattr__(key, value)
 
         self._entry[key] = self._changed[key] = value

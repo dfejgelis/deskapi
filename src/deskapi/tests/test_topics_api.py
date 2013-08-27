@@ -21,7 +21,7 @@ class DeskApi2TopicTests(TestCase):
         # register topic list
         httpretty.register_uri(
             httpretty.GET,
-            'https://eventbrite.desk.com/api/v2/topics',
+            'https://testing.desk.com/api/v2/topics',
             body=fixture('topic_list_page_1.json'),
             content_type='application/json',
         )
@@ -29,7 +29,7 @@ class DeskApi2TopicTests(TestCase):
         # register patching the first topic
         httpretty.register_uri(
             httpretty.PATCH,
-            'https://eventbrite.desk.com/api/v2/topics/1',
+            'https://testing.desk.com/api/v2/topics/1',
             body=fixture('topic_patch_topic_1.json'),
             content_type='application/json',
         )
@@ -37,7 +37,7 @@ class DeskApi2TopicTests(TestCase):
         # register creating a new topic
         httpretty.register_uri(
             httpretty.POST,
-            'https://eventbrite.desk.com/api/v2/topics',
+            'https://testing.desk.com/api/v2/topics',
             body=fixture('topic_create_response.json'),
             content_type='application/json',
         )
@@ -45,7 +45,7 @@ class DeskApi2TopicTests(TestCase):
         # topic translation list
         httpretty.register_uri(
             httpretty.GET,
-            'https://eventbrite.desk.com/api/v2/topics/1/translations',
+            'https://testing.desk.com/api/v2/topics/1/translations',
             body=fixture('topic_translations.json'),
             content_type='application/json',
         )
@@ -53,7 +53,7 @@ class DeskApi2TopicTests(TestCase):
         # update topic translation
         httpretty.register_uri(
             httpretty.PATCH,
-            'https://eventbrite.desk.com/api/v2/topics/1/translations/ja',
+            'https://testing.desk.com/api/v2/topics/1/translations/ja',
             body=fixture('topic_translation_update.json'),
             content_type='application/json',
         )
@@ -61,7 +61,7 @@ class DeskApi2TopicTests(TestCase):
         # create topic translation
         httpretty.register_uri(
             httpretty.POST,
-            'https://eventbrite.desk.com/api/v2/topics/1/translations',
+            'https://testing.desk.com/api/v2/topics/1/translations',
             body=fixture('topic_translation_create.json'),
             content_type='application/json',
         )
@@ -72,14 +72,14 @@ class DeskApi2TopicTests(TestCase):
 
     def test_topics_returns_collection(self):
 
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
         topics = desk_api.topics()
 
         self.assertEqual(len(topics), 2)
 
     def test_topics_allows_indexing(self):
 
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
         topics = desk_api.topics()
 
         first_topic = topics[0]
@@ -88,7 +88,7 @@ class DeskApi2TopicTests(TestCase):
 
     def test_topic_allows_property_access(self):
 
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
         topics = desk_api.topics()
 
         first_topic = topics[0]
@@ -98,13 +98,13 @@ class DeskApi2TopicTests(TestCase):
 
     def test_topic_translations_returns_collection(self):
 
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
         topic = desk_api.topics()[0]
 
         self.assertEqual(len(topic.translations), 2)
 
     def test_translation_dict_access(self):
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
         topic = desk_api.topics()[0]
 
         ja = topic.translations['ja']
@@ -112,7 +112,7 @@ class DeskApi2TopicTests(TestCase):
 
     def test_update_topic_translation(self):
 
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
         topic = desk_api.topics()[0]
 
         ja = topic.translations['ja']
@@ -130,7 +130,7 @@ class DeskApi2TopicTests(TestCase):
 
     def test_create_topic_translation(self):
 
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
         topic = desk_api.topics()[0]
 
         es = topic.translations.create(
@@ -148,14 +148,14 @@ class DeskApi2TopicTests(TestCase):
 
     def test_topic_api_href(self):
 
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
         topic = desk_api.topics()[0]
 
         self.assertEqual(topic.api_href, '/api/v2/topics/1')
 
     def test_update_topic(self):
 
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
         topic = desk_api.topics()[0]
 
         topic.name = 'New Name'
@@ -170,7 +170,7 @@ class DeskApi2TopicTests(TestCase):
 
     def test_create_topic(self):
 
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
         topics = desk_api.topics()
 
         new_topic = topics.create(
@@ -186,7 +186,7 @@ class DeskApi2TopicTests(TestCase):
 
     def test_topics_support_iteration(self):
 
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
 
         count = 0
         for topic in desk_api.topics():

@@ -65,7 +65,7 @@ class DeskApi2ArticleTests(TestCase):
         # article pagination
         httpretty.register_uri(
             httpretty.GET,
-            re.compile(r'https://eventbrite.desk.com/api/v2/articles(\?page=\d+)?$'),
+            re.compile(r'https://testing.desk.com/api/v2/articles(\?page=\d+)?$'),
             body=self._article_page,
             content_type='application/json',
         )
@@ -73,7 +73,7 @@ class DeskApi2ArticleTests(TestCase):
         # article creation
         httpretty.register_uri(
             httpretty.POST,
-            re.compile('https://eventbrite.desk.com/api/v2/articles(\?page=\d+)?$'),
+            re.compile('https://testing.desk.com/api/v2/articles(\?page=\d+)?$'),
             body=fixture('article_create_response.json'),
             content_type='application/json',
         )
@@ -81,7 +81,7 @@ class DeskApi2ArticleTests(TestCase):
         # article update
         httpretty.register_uri(
             httpretty.PATCH,
-            'https://eventbrite.desk.com/api/v2/articles/1',
+            'https://testing.desk.com/api/v2/articles/1',
             body=fixture('article_update_response.json'),
             content_type='application/json',
         )
@@ -89,7 +89,7 @@ class DeskApi2ArticleTests(TestCase):
         # article translations
         httpretty.register_uri(
             httpretty.GET,
-            'https://eventbrite.desk.com/api/v2/articles/1/translations',
+            'https://testing.desk.com/api/v2/articles/1/translations',
             body=fixture('article_translations.json'),
             content_type='application/json',
         )
@@ -97,7 +97,7 @@ class DeskApi2ArticleTests(TestCase):
         # translation creation
         httpretty.register_uri(
             httpretty.POST,
-            'https://eventbrite.desk.com/api/v2/articles/1/translations',
+            'https://testing.desk.com/api/v2/articles/1/translations',
             body=fixture('article_translation_create_response.json'),
             content_type='application/json',
         )
@@ -105,7 +105,7 @@ class DeskApi2ArticleTests(TestCase):
         # translation update
         httpretty.register_uri(
             httpretty.PATCH,
-            'https://eventbrite.desk.com/api/v2/articles/1/translations/es',
+            'https://testing.desk.com/api/v2/articles/1/translations/es',
             body=fixture('article_translation_update_response.json'),
             content_type='application/json',
         )
@@ -117,7 +117,7 @@ class DeskApi2ArticleTests(TestCase):
 
     def test_articles_pagination(self):
 
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
         articles = desk_api.articles()
 
         self.assertEqual(len(articles), 75)
@@ -125,18 +125,18 @@ class DeskApi2ArticleTests(TestCase):
 
     ## def test_incremental_cache_filling(self):
 
-    ##     article = models.DeskApi2().articles()[0]
+    ##     article = models.DeskApi2(sitename='testing').articles()[0]
     ##     self.assertEqual(len(httpretty.httpretty.latest_requests), 1)
 
     def test_article_property_access(self):
 
-        article = models.DeskApi2().articles()[0]
+        article = models.DeskApi2(sitename='testing').articles()[0]
 
         self.assertEqual(article.subject, "Subject 1")
 
     def test_article_creation(self):
 
-        articles = models.DeskApi2().articles()
+        articles = models.DeskApi2(sitename='testing').articles()
 
         new_article = articles.create(
             subject='Social Media',
@@ -151,7 +151,7 @@ class DeskApi2ArticleTests(TestCase):
 
     def test_article_update(self):
 
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
         article = desk_api.articles()[0]
 
         article.subject = 'New Subject'
@@ -166,7 +166,7 @@ class DeskApi2ArticleTests(TestCase):
 
     def test_article_translation_dict_access(self):
 
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
         article = desk_api.articles()[0]
 
         es = article.translations['es']
@@ -174,7 +174,7 @@ class DeskApi2ArticleTests(TestCase):
 
     def test_article_translation_creation(self):
 
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
         article = desk_api.articles()[0]
 
         ja = article.translations.create(
@@ -186,7 +186,7 @@ class DeskApi2ArticleTests(TestCase):
 
     def test_article_translation_update(self):
 
-        desk_api = models.DeskApi2()
+        desk_api = models.DeskApi2(sitename='testing')
         article = desk_api.articles()[0]
 
         es = article.translations['es']
