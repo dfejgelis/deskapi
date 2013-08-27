@@ -145,14 +145,6 @@ class DeskCollection(DeskSession):
 
         return len(self.items())
 
-    @property
-    def api_href(self):
-        """Return the API href for this object."""
-        # XXX
-        self.items()
-
-        return self._links['self']['href']
-
     def create(self, **kwargs):
         """Create a new item in the Collection and return it."""
 
