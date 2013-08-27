@@ -1,0 +1,12 @@
+{
+  "name": "日本語訳",
+  "locale": "ja",
+  "created_at": "2013-08-16T00:25:07Z",
+  "updated_at": "2013-08-21T00:25:07Z",
+  "_links": {
+    "self": {
+      "href": "/api/v2/topics/1/translations/en_us",
+      "class": "topic_translation"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "total_entries": %(num_entries)s,
+  "_links": {
+    "self": {
+      "href": "/api/v2/articles?page=1",
+      "class": "page"
+    },
+    "first": {
+      "href": "/api/v2/articles?page=1",
+      "class": "page"
+    },
+    "last": {
+      "href": "/api/v2/articles?page=1",
+      "class": "page"
+    },
+    "next": %(next)s,
+    "previous": %(previous)s
+  },
+  "_embedded": {
+    "entries":
+        %(entries)s
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "subject": "Social Media",
+  "body": "",
+  "body_email": "",
+  "body_email_auto": false,
+  "body_chat": "",
+  "body_chat_auto": true,
+  "body_web_callback": "",
+  "body_web_callback_auto": false,
+  "body_twitter": "",
+  "body_twitter_auto": false,
+  "position": 1,
+  "quickcode": "AWESOME",
+  "in_support_center": true,
+  "internal_notes": "Notes to the agent here",
+  "publish_at": "2013-08-21T00:20:04Z",
+  "created_at": "2013-08-21T00:15:04Z",
+  "updated_at": "2013-08-21T00:20:04Z",
+  "_links": {
+    "self": {
+      "href": "/api/v2/articles/1",
+      "class": "article"
+    },
+    "topic": {
+      "href": "/api/v2/topics/1",
+      "class": "topic"
+    },
+    "translations": {
+      "href": "/api/v2/articles/1/translations",
+      "class": "article_translation"
+    }
+  }
+}
