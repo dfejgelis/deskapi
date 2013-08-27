@@ -111,7 +111,7 @@ class DeskApi2TopicTests(TestCase):
         ja = topic.translations['ja']
         self.assertEqual(ja.name, 'Japanese Translation')
 
-    def test_update_topic_translation(self):
+    def test_save_topic_translation(self):
 
         desk_api = models.DeskApi2(sitename='testing')
         topic = desk_api.topics()[0]
@@ -120,7 +120,26 @@ class DeskApi2TopicTests(TestCase):
         self.assertEqual(ja.name, 'Japanese Translation')
 
         ja.name = '日本語訳'
-        updated_ja = ja.update()
+        updated_ja = ja.save()
+
+        self.assertEqual(
+            json.loads(unicode_str(httpretty.last_request().body)),
+            json.loads(fixture('topic_translation_update_request.json')),
+        )
+
+        self.assertEqual(updated_ja.name, unicode_str('日本語訳'))
+
+    def test_update_topic_translation(self):
+
+        desk_api = models.DeskApi2(sitename='testing')
+        topic = desk_api.topics()[0]
+
+        ja = topic.translations['ja']
+        self.assertEqual(ja.name, 'Japanese Translation')
+
+        updated_ja = ja.update(
+            name='日本語訳',
+        )
 
         self.assertEqual(
             json.loads(unicode_str(httpretty.last_request().body)),
@@ -154,13 +173,13 @@ class DeskApi2TopicTests(TestCase):
 
         self.assertEqual(topic.api_href, '/api/v2/topics/1')
 
-    def test_update_topic(self):
+    def test_save_topic(self):
 
         desk_api = models.DeskApi2(sitename='testing')
         topic = desk_api.topics()[0]
 
         topic.name = 'New Name'
-        updated_topic = topic.update()
+        updated_topic = topic.save()
 
         self.assertEqual(
             json.loads(unicode_str(httpretty.last_request().body)),
@@ -168,6 +187,20 @@ class DeskApi2TopicTests(TestCase):
         )
 
         self.assertEqual(updated_topic.name, topic.name)
+
+    def test_update_topic(self):
+
+        desk_api = models.DeskApi2(sitename='testing')
+        updated_topic = desk_api.topics()[0].update(
+            name='New Name',
+        )
+
+        self.assertEqual(
+            json.loads(unicode_str(httpretty.last_request().body)),
+            json.loads(fixture('topic_update_request.json')),
+        )
+
+        self.assertEqual(updated_topic.name, 'New Name')
 
     def test_create_topic(self):
 

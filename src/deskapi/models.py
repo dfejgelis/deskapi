@@ -184,13 +184,18 @@ class DeskObject(DeskSession):
 
         return self._links['self']['href']
 
-    def update(self):
-        """Update this Desk object with new assignments."""
+    def save(self):
+        """Save this Desk object with new assignments."""
+
+        return self.update(**self._changed)
+
+    def update(self, **kwargs):
+        """Update this Desk object with kwargs, returning an updated version."""
 
         response = self.request(
             self.api_href,
             method='patch',
-            data=json.dumps(self._changed),
+            data=json.dumps(kwargs),
         )
 
         return self.object(response.json())

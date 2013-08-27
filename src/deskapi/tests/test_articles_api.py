@@ -153,14 +153,28 @@ class DeskApi2ArticleTests(TestCase):
         self.assertEqual(httpretty.last_request().path, '/api/v2/articles')
         self.assertEqual(new_article.subject, 'Social Media')
 
-    def test_article_update(self):
+    def test_article_save(self):
 
         desk_api = models.DeskApi2(sitename='testing')
         article = desk_api.articles()[0]
 
         article.subject = 'New Subject'
 
-        updated_article = article.update()
+        updated_article = article.save()
+        self.assertEqual(updated_article.subject, 'New Subject')
+
+        self.assertEqual(
+            json.loads(unicode_str(httpretty.last_request().body)),
+            json.loads(fixture('article_update_request.json')),
+        )
+
+    def test_article_update(self):
+
+        desk_api = models.DeskApi2(sitename='testing')
+        updated_article = desk_api.articles()[0].update(
+            subject='New Subject',
+        )
+
         self.assertEqual(updated_article.subject, 'New Subject')
 
         self.assertEqual(
@@ -188,14 +202,33 @@ class DeskApi2ArticleTests(TestCase):
 
         self.assertEqual(ja.subject, unicode_str('日本語訳'))
 
-    def test_article_translation_update(self):
+    def test_article_translation_save(self):
 
         desk_api = models.DeskApi2(sitename='testing')
         article = desk_api.articles()[0]
 
         es = article.translations['es']
         es.subject = 'Actualizada la traducción española'
-        updated_es = es.update()
+        updated_es = es.save()
+
+        self.assertEqual(
+            updated_es.subject,
+            unicode_str('Actualizada la traducción española'),
+        )
+        self.assertEqual(
+            json.loads(unicode_str(httpretty.last_request().body)),
+            json.loads(fixture('article_translation_update_request.json')),
+        )
+
+    def test_article_translation_update(self):
+
+        desk_api = models.DeskApi2(sitename='testing')
+        article = desk_api.articles()[0]
+
+        es = article.translations['es']
+        updated_es = es.update(
+            subject = 'Actualizada la traducción española',
+        )
 
         self.assertEqual(
             updated_es.subject,
