@@ -6,5 +6,7 @@
 *.pyc
 *.pyo
 .Python
-/*.egg/
+/*.egg
 *.egg-info/
+/.tox/
+/dist/
