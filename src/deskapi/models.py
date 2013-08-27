@@ -173,6 +173,16 @@ class DeskCollection(DeskSession):
 
         return self.items()[n]
 
+    def by_id(self, id):
+        """Return an item of this collection based on its ID."""
+
+        return self.object(
+            self.request(
+                '%s/%s' % (self._path, id),
+                method='GET',
+            ).json()
+        )
+
 
 class DeskObject(DeskSession):
 

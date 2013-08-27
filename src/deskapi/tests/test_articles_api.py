@@ -114,6 +114,13 @@ class DeskApi2ArticleTests(TestCase):
             content_type='application/json',
         )
 
+        # single article
+        httpretty.register_uri(
+            httpretty.GET,
+            'https://testing.desk.com/api/v2/articles/42',
+            body=fixture('article_show.json'),
+            content_type='application/json',
+        )
 
     def tearDown(self):
 
@@ -238,3 +245,10 @@ class DeskApi2ArticleTests(TestCase):
             json.loads(unicode_str(httpretty.last_request().body)),
             json.loads(fixture('article_translation_update_request.json')),
         )
+
+    def test_get_article_by_id(self):
+
+        desk_api = models.DeskApi2(sitename='testing')
+        article = desk_api.articles().by_id(42)
+
+        self.assertIsInstance(article, models.DeskObject)
