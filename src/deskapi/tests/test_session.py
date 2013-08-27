@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
-try:
-    from unittest2 import TestCase
-except ImportError:
-    from unittest import TestCase
-
+from deskapi.six import TestCase
 import requests
 
 from deskapi import models
