@@ -35,8 +35,11 @@ class DeskSession(object):
 
         request_kwargs = {}
 
-        if params:
-            request_kwargs['params'] = params
+        ## --- Someday we may want to do GETs with params; when we do,
+        ## --- this may be helpful
+
+        ## if params:
+        ##     request_kwargs['params'] = params
 
         if data:
             request_kwargs['data'] = data
@@ -54,9 +57,12 @@ class DeskSession(object):
 
         def wrapper(klass):
 
-            if issubclass(klass, DeskObject):
-                cls._CLASSES[name] = klass
-            elif issubclass(klass, DeskCollection):
+            ## --- Somday we may need customized behavior for Objects
+
+            ## if issubclass(klass, DeskObject):
+            ##     cls._CLASSES[name] = klass
+
+            if issubclass(klass, DeskCollection):
                 cls._COLLECTIONS[name] = klass
 
             return klass
