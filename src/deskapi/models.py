@@ -173,6 +173,10 @@ class DeskCollection(DeskSession):
 
         return self.items()[n]
 
+    def __contains__(self, key):
+
+        return key in self.items()
+
     def by_id(self, id):
         """Return an item of this collection based on its ID."""
 

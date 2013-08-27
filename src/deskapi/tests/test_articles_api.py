@@ -197,6 +197,13 @@ class DeskApi2ArticleTests(TestCase):
         es = article.translations['es']
         self.assertEqual(es.subject, 'Spanish Translation')
 
+    def test_article_translation_containment_checking(self):
+
+        desk_api = models.DeskApi2(sitename='testing')
+        article = desk_api.articles()[0]
+
+        self.assertTrue('es' in article.translations)
+
     def test_article_translation_creation(self):
 
         desk_api = models.DeskApi2(sitename='testing')
