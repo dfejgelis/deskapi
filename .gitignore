@@ -10,3 +10,5 @@
 *.egg-info/
 /.tox/
 /dist/
+.coverage
+/htmlcov/
