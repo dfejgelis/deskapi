@@ -155,14 +155,6 @@ class DeskCollection(DeskSession):
     def create(self, **kwargs):
         """Create a new item in the Collection and return it."""
 
-        create_body = {
-            "name": '',
-            "allow_questions": False,
-            "in_support_center": False,
-        }
-
-        create_body.update(kwargs)
-
         return self.object(
             self.request(
                 self._path,
