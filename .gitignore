@@ -1,0 +1,10 @@
+/bin/
+/include/
+/lib/
+/lib64/
+
+*.pyc
+*.pyo
+.Python
+/*.egg/
+*.egg-info/
