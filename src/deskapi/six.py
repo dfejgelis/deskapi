@@ -1,7 +1,7 @@
 import sys
 
 
-if sys.version_info < (3, 0):
+if sys.version_info < (3, 0):  # pragma: no cover
     import unittest2 as unittest
     from unittest2 import TestCase
     from urlparse import parse_qs
@@ -13,7 +13,7 @@ if sys.version_info < (3, 0):
 
         return input_string
 
-else:
+else:  # pragma: no cover
     import unittest
     from unittest import TestCase
     from urllib.parse import parse_qs
