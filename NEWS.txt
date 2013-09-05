@@ -4,4 +4,7 @@ News
 0.1
 ---
 
-*Release date: UNRELEASED*
+*Release date: 5 September 2013*
+
+* Initial release
+* Support for Articles, Topics, Translations
