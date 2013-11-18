@@ -58,8 +58,8 @@ Once you have a session ID, you can retrieve a list of Articles_::
 `Article fields`_ map to Python properties::
 
   >>> article = articles[0]
-  >>> article.subject
-  u'Subject 1'
+  >>> str(article.subject)
+  'Subject 1'
   >>> article.in_support_center
   True
 
@@ -117,8 +117,8 @@ like a ``dict``, keyed by locale::
   >>> translations = article.translations
   >>> len(translations)
   2
-  >>> translations['es'].subject
-  u'Tema de Ayuda'
+  >>> str(translations['es'].subject)
+  'Tema de Ayuda'
 
 
 .. _`valid Requests auth object`: http://docs.python-requests.org/en/latest/user/authentication/
