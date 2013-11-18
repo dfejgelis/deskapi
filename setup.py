@@ -10,6 +10,7 @@ version = '0.2'
 
 tests_require = [
     'httpretty',
+    'manuel',
 ]
 if sys.version_info < (3, 3):
     tests_require.append('unittest2')

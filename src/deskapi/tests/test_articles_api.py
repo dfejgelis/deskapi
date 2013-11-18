@@ -195,7 +195,7 @@ class DeskApi2ArticleTests(TestCase):
         article = desk_api.articles()[0]
 
         es = article.translations['es']
-        self.assertEqual(es.subject, 'Spanish Translation')
+        self.assertEqual(es.subject, 'Tema de Ayuda')
 
     def test_article_translation_containment_checking(self):
 
