@@ -9,7 +9,7 @@ NEWS = open(os.path.join(here, 'NEWS.txt')).read()
 version = '0.2'
 
 tests_require = [
-    'httpretty',
+    'httpretty==0.6.5',
     'manuel',
 ]
 if sys.version_info < (3, 3):
