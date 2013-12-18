@@ -134,7 +134,7 @@ class DeskCollection(DeskSession):
     def _fill_cache(self):
 
         items = []
-        page_response = self.request(self._path).json()
+        page_response = self.request(self._path).json
         if self._links is None and page_response.get('_links'):
             self._links = page_response.get('_links')
 
@@ -148,7 +148,7 @@ class DeskCollection(DeskSession):
             if page_response.get('_links', {}).get('next'):
                 page_response = self.request(
                     page_response['_links']['next']['href']
-                ).json()
+                ).json
             else:
                 page_response = None
 
@@ -166,7 +166,7 @@ class DeskCollection(DeskSession):
                 self._path,
                 method='POST',
                 data=json.dumps(kwargs),
-            ).json()
+            ).json
         )
 
     def __getitem__(self, n):
@@ -184,7 +184,7 @@ class DeskCollection(DeskSession):
             self.request(
                 '%s/%s' % (self._path, id),
                 method='GET',
-            ).json()
+            ).json
         )
 
 
