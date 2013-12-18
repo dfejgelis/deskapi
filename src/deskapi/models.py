@@ -238,6 +238,16 @@ class DeskObject(DeskSession):
             self._links['translations'],
         )
 
+    @property
+    def id(self):
+	    return int(self._links['self']['href'].split("/")[-1])
+
+    def articles(self):
+	    if self._links.get('articles'):
+		    return self.collection(
+			    self._links.get('articles'),
+		    )
+
 
 @DeskSession.register_class('topic')
 class DeskTopicCollection(DeskCollection):
