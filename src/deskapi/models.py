@@ -1,8 +1,18 @@
-import csv
 import json
 import os.path
-
+from oauth_hook import OAuthHook
 import requests
+
+class DeskError(Exception):
+    def __init__(self, status):
+        Exception.__init__(self, status)  # Exception is an old-school class
+        self.status = status
+
+    def __str__(self):
+        return self.status
+
+    def __unicode__(self):
+        return unicode(self.__str__())
 
 
 class DeskSession(object):
@@ -10,23 +20,22 @@ class DeskSession(object):
     _CLASSES = {}
     _COLLECTIONS = {}
 
-    def __init__(self, sitename=None, session=None, auth=None):
-
-        if sitename is None:
-            raise Exception()
+    def __init__(self, sitename, access_token, access_token_secret, consumer_key, consumer_secret):
+        self._access_token = access_token
+        self._access_token_secret = access_token_secret
+        self._consumer_key = consumer_key
+        self._consumer_secret = consumer_secret
 
         self._sitename = sitename
         self._BASE_URL = 'https://%s.desk.com' % (sitename, )
 
-        self._session = session
-
-        if self._session is None:
-            self._session = requests.Session()
-            self._session.auth = auth
-            self._session.headers.update({
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                })
+        self.auth_info = {
+            'sitename': self._sitename,
+            'access_token': self._access_token,
+            'access_token_secret': self._access_token_secret,
+            'consumer_key': self._consumer_key,
+            'consumer_secret': self._consumer_secret,
+        }
 
     def request(self, path, method='GET', params=None, data=None):
 
@@ -44,12 +53,23 @@ class DeskSession(object):
         if data:
             request_kwargs['data'] = data
 
-        return self._session.request(
-            method,
-            '%s%s' % (self._BASE_URL, path,),
-            verify=False,
-            **request_kwargs
-        )
+        url = '%s%s' % (self._BASE_URL, path,)
+
+        request = requests.Request(method.upper(), url, data=json.dumps(request_kwargs))
+        oauth_hook = OAuthHook(self._access_token, self._access_token_secret, self._consumer_key,
+                               self._consumer_secret, header_auth=True)
+        request = oauth_hook(request)
+        session = requests.session()
+        session.headers.update({
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        })
+        r = session.send(request.prepare())
+
+        if r.status_code >= 400:
+            raise DeskError(str(r.status_code))
+        return json.loads(r.content)
+
 
     @classmethod
     def register_class(cls, name):
@@ -76,9 +96,7 @@ class DeskSession(object):
             entry.get('_links', {}).get('self', {}).get('class'),
             DeskObject,
         )
-
-        kwargs['session'] = self._session
-        kwargs['sitename'] = self._sitename
+        kwargs.update(**self.auth_info)
 
         return object_class(entry, *args, **kwargs)
 
@@ -90,8 +108,7 @@ class DeskSession(object):
             DeskCollection,
         )
 
-        kwargs['session'] = self._session
-        kwargs['sitename'] = self._sitename
+        kwargs.update(**self.auth_info)
 
         return object_class(link_info['href'], *args, **kwargs)
 
@@ -134,7 +151,7 @@ class DeskCollection(DeskSession):
     def _fill_cache(self):
 
         items = []
-        page_response = self.request(self._path).json
+        page_response = self.request(self._path)
         if self._links is None and page_response.get('_links'):
             self._links = page_response.get('_links')
 
@@ -142,13 +159,13 @@ class DeskCollection(DeskSession):
 
             for entry in page_response['_embedded']['entries']:
                 items.append(
-                    self.object(entry, session=self._session)
+                    self.object(entry)
                 )
 
             if page_response.get('_links', {}).get('next'):
                 page_response = self.request(
                     page_response['_links']['next']['href']
-                ).json
+                )
             else:
                 page_response = None
 
@@ -166,7 +183,7 @@ class DeskCollection(DeskSession):
                 self._path,
                 method='POST',
                 data=json.dumps(kwargs),
-            ).json
+            )
         )
 
     def __getitem__(self, n):
@@ -184,7 +201,7 @@ class DeskCollection(DeskSession):
             self.request(
                 '%s/%s' % (self._path, id),
                 method='GET',
-            ).json
+            )
         )
 
 
@@ -218,7 +235,7 @@ class DeskObject(DeskSession):
             data=json.dumps(kwargs),
         )
 
-        return self.object(response.json())
+        return self.object(response)
 
     def __getattr__(self, key):
 
@@ -240,13 +257,13 @@ class DeskObject(DeskSession):
 
     @property
     def id(self):
-	    return int(self._links['self']['href'].split("/")[-1])
+        return int(self._links['self']['href'].split("/")[-1])
 
     def articles(self):
-	    if self._links.get('articles'):
-		    return self.collection(
-			    self._links.get('articles'),
-		    )
+        if self._links.get('articles'):
+            return self.collection(
+                self._links.get('articles'),
+            )
 
 
 @DeskSession.register_class('topic')
